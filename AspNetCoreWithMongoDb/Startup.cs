@@ -1,5 +1,9 @@
+using AspNetCoreWithMongoDb.Business;
+using AspNetCoreWithMongoDb.Business.Interfaces;
 using AspNetCoreWithMongoDb.Models.Context;
 using AspNetCoreWithMongoDb.Models.Context.Interface;
+using AspNetCoreWithMongoDb.Repository;
+using AspNetCoreWithMongoDb.Repository.Interfaces;
 using AspNetCoreWithMongoDb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +34,9 @@ namespace AspNetCoreWithMongoDb
                 sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 
             services.AddSingleton<HangarService>();
+
+            services.AddScoped<IHangarBusiness, HangarBusiness>();
+            services.AddScoped<IHangarRepository, HangarRepository>();
 
             services.AddControllers();
         }

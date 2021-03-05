@@ -1,75 +1,67 @@
-﻿using AspNetCoreWithMongoDb.Models;
-using AspNetCoreWithMongoDb.Services;
+﻿using AspNetCoreWithMongoDb.Business.Interfaces;
+using AspNetCoreWithMongoDb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace AspNetCoreWithMongoDb.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class HangaresController : Controller
     {
-        private readonly HangarService _hangarService;
+        private readonly IHangarBusiness _hangarBusiness;
 
-        public HangaresController(HangarService hangarService)
+        public HangaresController(IHangarBusiness hangarBusiness)
         {
-            _hangarService = hangarService;
+            _hangarBusiness = hangarBusiness;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_hangarService.Get());
+            return Ok(_hangarBusiness.Get());
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-            var nota = _hangarService.Get(id);
+            var hangar = _hangarBusiness.Get(id);
 
-            if (nota == null)
+            if (hangar == null)
             {
                 return NotFound();
             }
 
-            return Ok(nota);
+            return Ok(hangar);
         }
 
         [HttpPost]
         public IActionResult Create(Hangar nota)
         {
-            nota.Id = Guid.NewGuid().ToString();
-            _hangarService.Create(nota);
+            _hangarBusiness.Create(nota);
 
             return Ok(nota);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(string id, Hangar notaIn)
+        public IActionResult Update(string id, Hangar hangar)
         {
-            var nota = _hangarService.Get(id);
-
-            if (nota == null)
+            try
             {
-                return NotFound();
+                _hangarBusiness.Update(id, hangar);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
             }
 
-            _hangarService.Update(id, notaIn);
-
-            return Ok(notaIn);
+            return Ok(hangar);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            var nota = _hangarService.Get(id);
-
-            if (nota == null)
-            {
-                return NotFound();
-            }
-
-            _hangarService.Remove(nota.Id);
+            _hangarBusiness.Remove(id);
 
             return NoContent();
         }
