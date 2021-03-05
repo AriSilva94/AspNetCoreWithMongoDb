@@ -7,11 +7,11 @@ namespace AspNetCoreWithMongoDb.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NotasController : Controller
+    public class HangaresController : Controller
     {
         private readonly HangarService _hangarService;
 
-        public NotasController(HangarService hangarService)
+        public HangaresController(HangarService hangarService)
         {
             _hangarService = hangarService;
         }
